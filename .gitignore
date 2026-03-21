@@ -1,0 +1,17 @@
+# Скомпилированные файлы
+*.exe
+*.out
+*.app
+Debug/
+Release/
+
+# Папки VS Code
+.vscode/
+
+# Папки с билдами
+build/
+cmake-build-*/
+
+# Временные файлы
+*.tmp
+*.log
