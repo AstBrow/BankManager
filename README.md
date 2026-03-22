@@ -14,7 +14,7 @@
 - STL (vector, map, algorithm)
 
 ## Автор
-Твоё имя
+by AstBrow
 
 ## Статус
 В разработке
