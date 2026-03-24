@@ -31,6 +31,11 @@ double Account::getBalance () const
     return balance;
 }
 
+void Account::setBalance (double newBalance)  
+{
+    balance = newBalance;
+}
+
 int Account::getOwnerID () const 
 {
     return ownerID;

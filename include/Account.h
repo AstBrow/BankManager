@@ -5,12 +5,18 @@
 class Account 
 {
  private:
+
     int accountNumber = 0;
     double balance = 0;
     int ownerID = 0;
     std::string typeAcc = "unknown";
 
+ protected:
+
+    void setBalance(double newBalance);
+
  public:
+    Account ();
     Account (double balance, int ownerID, std::string typeAcc);
 
     int getAccountNumber () const;
