@@ -4,6 +4,7 @@
 class Client 
 {
  private:
+ 
     int id;
     int age;
     std::string name;
@@ -11,7 +12,7 @@ class Client
 
  public:
 
-    Client (std::string name, std::string passport, int age);
+    Client (std::string name, std::string passport, int age, int id);
 
     int getID () const;
     std::string getName () const;

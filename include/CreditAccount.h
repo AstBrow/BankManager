@@ -8,7 +8,7 @@ class CreditAccount : public Account
     double creditLimit = 0;
 
  public:
-    CreditAccount (double balance, int ownerID, double creditLimit);
+    CreditAccount (double balance, int ownerID, double creditLimit, int accountNUmber);
 
     bool withdraw (double amount);
 

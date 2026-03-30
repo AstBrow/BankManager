@@ -1,23 +1,25 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <assert.h>
+#include <stdexcept>
 #include "Account.h"
 
-Account::Account (double balance, int ownerID, std::string typeAcc) 
+Account::Account (double balance, int ownerID, std::string typeAcc, int accountNumber) 
 {
-    srand(static_cast<unsigned int>(time(NULL))); // grain for random
-    int random_account_number = 1000 + rand() % (9999 - 1000 + 1);
+    this->accountNumber = accountNumber;
 
-    //проверка: существует ли уже такой номер счета в базе, если да то крутим рандом еще раз, с помощью while
-    accountNumber = random_account_number;
-
-    assert (balance >= 0);
+    if (balance < 0) 
+    {
+        throw std::invalid_argument("Error: The balance cannot be negative.");
+    }
     this->balance = balance;
 
     this->ownerID = ownerID;
 
-    assert (typeAcc == "debit" || typeAcc == "credit");
+    if (typeAcc != "Debit" && typeAcc != "Credit") 
+    {
+        throw std::invalid_argument("Error: Invalid account type");
+    }
     this->typeAcc = typeAcc;
 }
 
@@ -73,7 +75,6 @@ bool Account::withdraw (double amount)
 
 void Account::showInfo () 
 {
-    std::cout << "-- INFORMATION FOR ACCOUNT --" << std::endl;
     std::cout << "\n[- Account number: " << getAccountNumber() << std::endl;
     std::cout << "\n[- Balance: " << getBalance() << std::endl;
     std::cout << "\n[- Owner ID: " << getOwnerID()  << std::endl;

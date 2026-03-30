@@ -17,7 +17,7 @@ class Account
 
  public:
     Account ();
-    Account (double balance, int ownerID, std::string typeAcc);
+    Account (double balance, int ownerID, std::string typeAcc, int accountNumber);
 
     int getAccountNumber () const;
     double getBalance () const;
