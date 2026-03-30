@@ -5,5 +5,5 @@
 class DebitAccount : public Account 
 {
  public:
-    DebitAccount(double balance, int ownerID);
+    DebitAccount(double balance, int ownerID, int accountNumber);
 }; 

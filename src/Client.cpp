@@ -1,22 +1,29 @@
 #include "Client.h"
 #include <iostream>
 #include <string>
-#include <assert.h>
+#include <stdexcept>
 
-int lastID = 0; // Временная переменная, впоследующем будет файл сохранения.
-
-Client::Client (std::string name, std::string passport, int age) 
+Client::Client (std::string name, std::string passport, int age, int id) 
 {
-    this->id = lastID + 1;
+    this->id = id;
     
-    assert (name.length() > 2);
+    if (name.length() < 2) 
+    {
+        throw std::invalid_argument("Error: The name must be more than 2 characters.");
+    }
     this->name = name;
 
     // добавить проверку что таких данных паспорта нет в системе + проверка что серия и номер это цифры.
-    assert (passport.length() == 10);
+    if (passport.length() != 10) 
+    {
+        throw std::invalid_argument("Error: Invalid data format");
+    }
     this->passport = passport;
 
-    assert (age >= 14);
+    if (age < 14) 
+    {
+        throw std::invalid_argument("Error: You cannot open an account until you are 14 years old.");
+    }
     this->age = age;
 }
 

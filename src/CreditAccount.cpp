@@ -1,10 +1,14 @@
 #include <iostream>
-#include <assert.h>
+#include <stdexcept>
 #include "CreditAccount.h"
 
-CreditAccount::CreditAccount(double balance, int ownerID, double creditLimit) : Account(balance, ownerID, "Credit")
+CreditAccount::CreditAccount(double balance, int ownerID, double creditLimit, int accountNumber)
+     : Account(balance, ownerID, "Credit", accountNumber)
 {
-    assert (creditLimit >= 0);
+    if (creditLimit < 0) 
+    {
+        throw std::invalid_argument("Error: The credit limit cannot be negative.");
+    }
     this->creditLimit = creditLimit;
 }
 
