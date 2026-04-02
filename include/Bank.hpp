@@ -26,7 +26,20 @@ class Bank
     bool uniquenessCheckPassport (std::string passport);
     bool uniquenessCheckAccNum (int accountNum);
 
-    void debuggingCounters ();
+    void debuggMenu ();
+
+    void saveCounters ();
+    void loadCounters ();
+
+    void saveClients ();
+    void loadClients ();
+
+    void saveAccounts ();
+    void loadAccounts ();
+
+    void saveAll ();
+    void loadAll ();
+
 
  public:
     Bank ();

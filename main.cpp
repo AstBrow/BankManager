@@ -15,7 +15,7 @@ int main ()
         bank.showClientAccounts(1);
 
         bank.addClient("James", "0102034567", 20);
-        bank.openAccount(1001, 2, "Credit", 200);
+        bank.openAccount(1001, 2, "Debit", 200);
         bank.showAllClients();
         bank.showClientAccounts(2);
     }
