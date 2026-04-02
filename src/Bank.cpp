@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <stdexcept>
 #include <exception>
+#include <thread>
+#include <chrono>
 #include "Bank.hpp"
 
 bool Bank::showClientByID (int id) 
@@ -71,7 +73,7 @@ bool Bank::uniquenessCheckAccNum (int accountNum)
     return true;
 }
 
-void Bank::debuggingCounters () 
+void Bank::debuggMenu () 
 {
     std::cout << "[DEBUG] Enter the code to access the debug menu: " << std::endl;
     int code;
@@ -80,7 +82,7 @@ void Bank::debuggingCounters ()
     if (code == 3434)
     {
         int err;
-        std::cout << "[DEBUG] Choose type error: 1 - AccountNumber | 2 - ClientID " << std::endl;
+        std::cout << "[DEBUG] Choose type error: [1] - AccountNumber | [2] - ClientID | [3] - Save-Load options " << std::endl;
         std::cin >> err;
         if (err == 1) 
         {
@@ -90,42 +92,329 @@ void Bank::debuggingCounters ()
         {
             nextClientID++;
         }
-        else 
+        else if (err == 3) 
         {
-            throw std::runtime_error("Error: incorrect type error");
+            std::cout << "[DEBUG] Force: [1] Load / [2] Save: ";
+            int chos;
+            std::cin >> chos;
+
+            if (chos == 1) 
+            {
+                    std::cout << "[DEBUG] Select a parameter: " << std::endl;
+                    std::cout << "  [1] - Load counters" << std::endl;
+                    std::cout << "  [2] - Load Clients" << std::endl;
+                    std::cout << "  [3] - Load Accounts" << std::endl;
+                    std::cout << "  --> ";
+                    int choose;
+                    std::cin >> choose;
+
+                try 
+                {
+                    if (choose == 1) 
+                    {
+                        std::cout << "[DEBUG] Loading Counters.." << std::endl;
+                        loadCounters();
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        std::cout << "[DEBUG] Succsess." << std::endl;
+                    }
+                    else if (choose == 2) 
+                    {
+                        std::cout << "[DEBUG] Loading Clients.." << std::endl;
+                        loadClients();
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        std::cout << "[DEBUG] Succsess." << std::endl;
+                    }
+                    else if (choose == 3) 
+                    {
+                        std::cout << "[DEBUG] Loading Accounts.." << std::endl;
+                        loadAccounts();
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        std::cout << "[DEBUG] Succsess." << std::endl;
+                    }
+                    else;
+                }
+                catch (const std::exception& e) 
+                {
+                    std::cout << e.what();
+                }
+            }
+            else if (chos == 2) 
+            {
+                std::cout << "[DEBUG] Select a parameter: " << std::endl;
+                std::cout << "  [1] - Save counters" << std::endl;
+                std::cout << "  [2] - Save Clients" << std::endl;
+                std::cout << "  [3] - Save Accounts" << std::endl;
+                std::cout << "  --> ";
+                int choose;
+                std::cin >> choose;
+
+                try 
+                {
+                    if (choose == 1) 
+                    {
+                        std::cout << "[DEBUG] Saving Counters.." << std::endl;
+                        saveCounters();
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        std::cout << "[DEBUG] Succsess." << std::endl;
+                    }
+                    else if (choose == 2) 
+                    {
+                        std::cout << "[DEBUG] Saving Clients.." << std::endl;
+                        saveClients();
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        std::cout << "[DEBUG] Succsess." << std::endl;
+                    }
+                    else if (choose == 3) 
+                    {
+                        std::cout << "[DEBUG] Saving Accounts.." << std::endl;
+                        saveAccounts();
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        std::cout << "[DEBUG] Succsess." << std::endl;
+                    }
+                    else;
+                }
+                catch (const std::exception& e) 
+                {
+                    std::cout << e.what();
+                }
+            }
+            else;
         }
+        else;
     }
-    else 
-    {
-        throw std::runtime_error("Error: Incorrect code for Debug menu");
-    }
+    else;
 }
 
+// Save-Load
 
+void Bank::saveCounters () 
+{
+    std::ofstream file ("C:\\vs code\\BankManager\\data\\Counters.txt");
+    if (!file.is_open()) 
+    {
+        throw std::runtime_error("Error: failed to open file.");
+    }
+
+    file << nextClientID << " " << nextAccountNumber;
+
+    file.close();
+}
+
+void Bank::loadCounters () 
+{
+    std::ifstream file ("C:\\vs code\\BankManager\\data\\Counters.txt");
+    if (!file.is_open()) 
+    {
+        throw std::runtime_error("Error: failed to open file.");
+    }
+    file.seekg(0, std::ios::end);
+
+    if (file.tellg() == 0) 
+    {
+        throw std::runtime_error("Error: file is empty.");
+    }
+    file.seekg(0, std::ios::beg);
+
+    file >> nextClientID >> nextAccountNumber;
+
+    file.close();
+}
+
+void Bank::saveClients () 
+{
+    std::ofstream file ("C:\\vs code\\BankManager\\data\\Clients.txt");
+
+    if (!file.is_open()) 
+    {
+        throw std::runtime_error("Error: failed to open file.");
+    }
+
+    for (int i = 0; i < Clients.size(); i++) 
+    {
+        file << Clients[i].getName() << " " << Clients[i].getPassport() 
+          << " " << Clients[i].getAge() << " " << Clients[i].getID() << "\n";
+    }
+
+    file.close();
+}
+
+void Bank::loadClients () 
+{
+    std::ifstream file ("C:\\vs code\\BankManager\\data\\Clients.txt");
+
+    if (!file.is_open()) 
+    {
+        throw std::runtime_error("Error: failed to open file.");
+    }
+    file.seekg(0, std::ios::end);
+
+    if (file.tellg() == 0) 
+    {
+        throw std::runtime_error("Error: file is empty.");
+    }
+    file.seekg(0, std::ios::beg);
+
+    std::string temp_name, temp_passport;
+    int temp_age, temp_id;
+
+    while (file >> temp_name >> temp_passport >> temp_age >> temp_id) 
+    {
+        Client clientAdd(temp_name, temp_passport, temp_age, temp_id);
+        Clients.push_back(clientAdd);
+    }
+
+    file.close();
+}
+
+void Bank::saveAccounts () 
+{
+    std::ofstream file ("C:\\vs code\\BankManager\\data\\Accounts.txt");
+
+    if (!file.is_open()) 
+    {
+        throw std::runtime_error("Error: failed to open file");
+    }
+
+    for (int i = 0; i < Accounts.size(); i++) 
+    {
+        if (Accounts[i]->getTypeAcc() == "Debit") 
+        {
+            file << Accounts[i]->getBalance() << " " << Accounts[i]->getOwnerID() 
+              << " " << Accounts[i]->getTypeAcc() << " " << Accounts[i]->getAccountNumber() << "\n";
+        }
+        else 
+        {
+            CreditAccount* credit = dynamic_cast<CreditAccount*>(Accounts[i]);
+
+            file << credit->getBalance() << " " << credit->getOwnerID() 
+              << " " << credit->getTypeAcc() << " " << credit->getCreditLimit() 
+              << " " << Accounts[i]->getAccountNumber() << "\n";
+        }
+    }
+
+    file.close();
+}
+
+void Bank::loadAccounts () 
+{
+    std::ifstream file ("C:\\vs code\\BankManager\\data\\Accounts.txt");
+
+    if (!file.is_open()) 
+    {
+        throw std::runtime_error("Error: failed to open file.");
+    }
+    file.seekg(0, std::ios::end);
+
+    if (file.tellg() == 0) 
+    {
+        throw std::runtime_error("Error: file is empty.");
+    }
+    file.seekg(0, std::ios::beg);
+
+    double temp_balance, temp_creditLimit;
+    int temp_clientId, temp_accountNumber;
+    std::string temp_type;
+
+    while (file >> temp_balance >> temp_clientId >> temp_type) 
+    {
+        if (temp_type == "Credit") 
+        {
+            file >> temp_creditLimit >> temp_accountNumber;
+            CreditAccount* openCredAcc = new CreditAccount(temp_balance, temp_clientId, temp_creditLimit, temp_accountNumber);
+            Accounts.push_back(openCredAcc);
+        }
+        else 
+        {
+            file >> temp_accountNumber;
+            DebitAccount* openCredAcc = new DebitAccount(temp_balance, temp_clientId, temp_accountNumber);
+            Accounts.push_back(openCredAcc);
+        }
+    }
+
+    file.close();
+}
+
+void Bank::saveAll () 
+{
+    try 
+    {
+        std::cout << "Saving counters.." << std::endl;
+        saveCounters();
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Saving Clietns.." << std::endl;
+        saveClients();
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Saving Accounts.." << std::endl;
+        saveAccounts();
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Succsess." << std::endl;
+    }
+    catch (const std::exception& e) 
+    {
+        std::cout << e.what();
+        std::cout << "\nData may not have been saved correctly." << std::endl;
+    }
+}
+  
+void Bank::loadAll () 
+{
+    std::ifstream test("C:\\vs code\\BankManager\\data\\Counters.txt");
+    if (!test.is_open()) 
+    {
+        std::cout << "First launch: no save files found. Starting fresh.\n";
+        nextClientID = 1;
+        nextAccountNumber = 1000;
+        return;
+    }
+    test.close();
+
+    try 
+    {
+        std::cout << "Loading counters.." << std::endl;
+        loadCounters();
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Loading Clients.." << std::endl;
+        loadClients();
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Loading Accounts.." << std::endl;
+        loadAccounts();
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Succsess." << std::endl;
+
+    }
+    catch (const std::exception& e) 
+    {
+        std::cout << e.what();
+        std::cout << "Starting with fresh data.\n";
+        
+        nextClientID = 1;
+        nextAccountNumber = 1000;
+        Clients.clear();
+        for (int i = 0; i < Accounts.size(); i++) delete Accounts[i];
+        Accounts.clear();
+    }
+}
+// end Save-Load
 
 Bank::Bank () 
 {
-    nextAccountNumber = 1000;
-    nextClientID = 1;
-    // std::fstream file("C:\\vs code\\BankManager\\data\\saveIDandAccNum.txt", std::ios::binary); //binary for safety
-    // assert (file.is_open());
-    // file.read(reinterpret_cast<char*>(&nextClientID), sizeof(nextClientID));
-    // file.read(reinterpret_cast<char*>(&nextAccountNumber), sizeof(nextAccountNumber));
-    // file.close();
+    loadAll();
 }
 
 Bank::~Bank () 
 {
+    saveAll();
+
     for (int i = 0; i < Accounts.size(); i++) 
     {
         delete Accounts[i];
     }
-
-    // std::ofstream file("C:\\vs code\\BankManager\\data\\saveIDandAccNum.txt", std::ios::binary); //binary for safety
-    // assert (file.is_open());
-    // file.write(reinterpret_cast<char*>(&nextClientID), sizeof(nextClientID));
-    // file.write(reinterpret_cast<char*>(&nextAccountNumber), sizeof(nextAccountNumber));
-    // file.close();
 }
 
 void Bank::addClient (std::string name, std::string passport, int age) 
