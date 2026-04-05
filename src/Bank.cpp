@@ -75,14 +75,19 @@ bool Bank::uniquenessCheckAccNum (int accountNum)
 
 void Bank::debuggMenu () 
 {
-    std::cout << "[DEBUG] Enter the code to access the debug menu: " << std::endl;
+    std::cout << "\n[DEBUG] Enter the code to access the debug menu: ";
     int code;
     std::cin >> code;
     
     if (code == 3434)
     {
         int err;
-        std::cout << "[DEBUG] Choose type error: [1] - AccountNumber | [2] - ClientID | [3] - Save-Load options " << std::endl;
+        std::cout << "[DEBUG] Choose type error: " << std::endl;
+        std::cout << "  [1] - AccountNumber" << std::endl;
+        std::cout << "  [2] - ClientID" << std::endl;
+        std::cout << "  [3] - Save-Load options" << std::endl;
+        std::cout << "  --> ";
+
         std::cin >> err;
         if (err == 1) 
         {
@@ -94,7 +99,11 @@ void Bank::debuggMenu ()
         }
         else if (err == 3) 
         {
-            std::cout << "[DEBUG] Force: [1] Load / [2] Save: ";
+            std::cout << "[DEBUG] Force : " << std::endl;
+            std::cout << "  [1] - Load" << std::endl;
+            std::cout << "  [2] - Save" << std::endl;
+            std::cout << "  [3] - Delete" << std::endl;
+            std::cout << "  --> ";
             int chos;
             std::cin >> chos;
 
@@ -102,8 +111,9 @@ void Bank::debuggMenu ()
             {
                     std::cout << "[DEBUG] Select a parameter: " << std::endl;
                     std::cout << "  [1] - Load counters" << std::endl;
-                    std::cout << "  [2] - Load Clients" << std::endl;
-                    std::cout << "  [3] - Load Accounts" << std::endl;
+                    std::cout << "  [2] - Load clients" << std::endl;
+                    std::cout << "  [3] - Load accounts" << std::endl;
+                    std::cout << "  [4] - Load all data" << std::endl;
                     std::cout << "  --> ";
                     int choose;
                     std::cin >> choose;
@@ -131,6 +141,11 @@ void Bank::debuggMenu ()
                         std::this_thread::sleep_for(std::chrono::seconds(1));
                         std::cout << "[DEBUG] Succsess." << std::endl;
                     }
+                    else if (choose == 4) 
+                    {
+                        std::cout << "[DEBUG] Loading all.." << std::endl;
+                        loadAll();
+                    }
                     else;
                 }
                 catch (const std::exception& e) 
@@ -142,8 +157,9 @@ void Bank::debuggMenu ()
             {
                 std::cout << "[DEBUG] Select a parameter: " << std::endl;
                 std::cout << "  [1] - Save counters" << std::endl;
-                std::cout << "  [2] - Save Clients" << std::endl;
-                std::cout << "  [3] - Save Accounts" << std::endl;
+                std::cout << "  [2] - Save clients" << std::endl;
+                std::cout << "  [3] - Save accounts" << std::endl;
+                std::cout << "  [4] - Save all data" << std::endl;
                 std::cout << "  --> ";
                 int choose;
                 std::cin >> choose;
@@ -171,12 +187,33 @@ void Bank::debuggMenu ()
                         std::this_thread::sleep_for(std::chrono::seconds(1));
                         std::cout << "[DEBUG] Succsess." << std::endl;
                     }
+                    else if (choose == 4) 
+                    {
+                        std::cout << "[DEBUG] All saving.." << std::endl;
+                        saveAll();
+                    }
                     else;
                 }
                 catch (const std::exception& e) 
                 {
                     std::cout << e.what();
                 }
+            }
+            else if (chos == 3) 
+            {
+                std::cout << "[DEBUG] Delete all data. " << std::endl;
+
+                std::cout << "Are you sure you want to delete all data?" << std::endl;
+                std::cout << "[Y / N] : ";
+                char answ;
+                std::cin >> answ;
+
+                if (answ == 'Y' || answ == 'y') 
+                {
+                    deleteAll();
+                    loadAll();
+                }
+                else;
             }
             else;
         }
@@ -307,7 +344,7 @@ void Bank::loadAccounts ()
 
     if (file.tellg() == 0) 
     {
-        throw std::runtime_error("Error: file is empty.");
+        return;
     }
     file.seekg(0, std::ios::beg);
 
@@ -350,7 +387,7 @@ void Bank::saveAll ()
         saveAccounts();
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout << "Succsess." << std::endl;
+        std::cout << "Success." << std::endl;
     }
     catch (const std::exception& e) 
     {
@@ -385,13 +422,13 @@ void Bank::loadAll ()
         loadAccounts();
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout << "Succsess." << std::endl;
+        std::cout << "Success." << std::endl;
 
     }
     catch (const std::exception& e) 
     {
         std::cout << e.what();
-        std::cout << "Starting with fresh data.\n";
+        std::cout << "\nStarting with fresh data.\n";
         
         nextClientID = 1;
         nextAccountNumber = 1000;
@@ -401,6 +438,22 @@ void Bank::loadAll ()
     }
 }
 // end Save-Load
+
+void Bank::deleteAll () 
+{
+    std::cout << "Delete clietns.." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::ofstream file ("C:\\vs code\\BankManager\\data\\Clients.txt");
+    file.close();
+
+    std::cout << "Delete accounts.." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::ofstream file2 ("C:\\vs code\\BankManager\\data\\Accounts.txt");
+
+    file2.close();
+
+    std::cout << "Success." << std::endl;
+}
 
 Bank::Bank () 
 {
@@ -431,6 +484,7 @@ void Bank::addClient (std::string name, std::string passport, int age)
         throw std::runtime_error("Error: Such data already exists in the system.");
     }
     Client clientAdd(name, passport, age, id);
+    std::cout << "Сlient added successfully." << std::endl;
     Clients.push_back(clientAdd);
 }
 
@@ -457,6 +511,7 @@ void Bank::openAccount (double balance, int clientID, std::string type, double c
         nextAccountNumber++;
 
         CreditAccount* openCredAcc = new CreditAccount(balance, clientID, creditLimit, accountNumber);
+        std::cout << "Account opened successfully." << std::endl;
         Accounts.push_back(openCredAcc);
     }
     else 
@@ -469,6 +524,7 @@ void Bank::openAccount (double balance, int clientID, std::string type, double c
         nextAccountNumber++;
 
         DebitAccount* openDebAcc = new DebitAccount(balance, clientID, accountNumber);
+        std::cout << "Account opened successfully." << std::endl;
         Accounts.push_back(openDebAcc);
     }
 }
@@ -482,6 +538,7 @@ void Bank::closeAccount (int accountNumber)
     }
     delete Accounts[i];
     Accounts.erase(Accounts.begin() + i);
+    std::cout << "Account successfully closed" << std::endl;
 }
 
 void Bank::deposit (int accountNumber, double amount) 
@@ -492,6 +549,7 @@ void Bank::deposit (int accountNumber, double amount)
         throw std::runtime_error("Error: An account with this number does not exist.");
     }
     Accounts[i]->deposit(amount);
+    std::cout << "Deposit of "<< amount << " was successful." << std::endl;
 }
 
 void Bank::withdraw (int accountNumber, double amount) 
@@ -502,6 +560,7 @@ void Bank::withdraw (int accountNumber, double amount)
         throw std::runtime_error("Error: An account with this number does not exist.");
     }
     Accounts[i]->withdraw(amount);
+    std::cout << "Withdrawal of "<< amount << " was successful." << std::endl;
 }
 
 void Bank::transfer (int fromAccNum, int toAccnum, double amount) 
@@ -519,18 +578,21 @@ void Bank::transfer (int fromAccNum, int toAccnum, double amount)
     }
 
     Accounts[itFrom]->withdraw(amount);
+    std::cout << "From the account " << fromAccNum << " withdrawn " << amount << std::endl;
 
     Accounts[itTo]->deposit(amount);
+    std::cout << "To the account " << toAccnum << " deposited " << amount << std::endl;
 }
 
 void Bank::showAllClients () 
 {
-    std::cout << " = = = ALL CLIENTS = = =" << std::endl;
+    std::cout << "\n = = = ALL CLIENTS = = =" << std::endl;
 
     for (int i = 0; i < Clients.size(); i++) 
     {
         std::cout << "-- Client #" << i + 1 << std::endl;
         std::cout << "Name: " << Clients[i].getName() << std::endl;
+        std::cout << "ID: " << Clients[i].getID() << std::endl;
         std::cout << "Age: " << Clients[i].getAge() << std::endl;
         std::cout << "- - - - - - - - " << std::endl;
     }
@@ -539,7 +601,7 @@ void Bank::showAllClients ()
 void Bank::showClientAccounts (int clientID) 
 {
     int itId = -1;
-    std::cout << "= = = INFORMATION FOR CLIENT'S ACCOUNTS = = =" << std::endl;
+    std::cout << "\n= = = INFORMATION FOR CLIENT'S ACCOUNTS = = =" << std::endl;
 
     for (int i = 0; i < Clients.size(); i++) 
     {
