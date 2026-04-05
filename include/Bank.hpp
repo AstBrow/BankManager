@@ -17,16 +17,11 @@ class Bank
     int nextClientID = 0;
     int nextAccountNumber = 0;
 
-    bool showClientByID (int id);
-    bool showAccountByNumber (int accountNumebr);
-
     int findIterByAccountNumber (int accountNumber);
 
     bool uniquenessCheckID (int id);
     bool uniquenessCheckPassport (std::string passport);
     bool uniquenessCheckAccNum (int accountNum);
-
-    void debuggMenu ();
 
     void saveCounters ();
     void loadCounters ();
@@ -39,6 +34,8 @@ class Bank
 
     void saveAll ();
     void loadAll ();
+
+    void deleteAll ();
 
 
  public:
@@ -61,5 +58,9 @@ class Bank
     void showAllClients ();
 
     void showClientAccounts (int clientID);
+
+    bool showClientByID (int id);
+    bool showAccountByNumber (int accountNumebr);
+    void debuggMenu ();
 
 };
