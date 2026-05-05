@@ -24,6 +24,11 @@ Client::Client (std::string name, std::string passport, int age, int id)
     {
         throw std::invalid_argument("Error: You cannot open an account until you are 14 years old.");
     }
+
+    if (age <= 0) 
+    {
+        throw std::invalid_argument("Error: Inccorect age.");
+    }
     this->age = age;
 }
 

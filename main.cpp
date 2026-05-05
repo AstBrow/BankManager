@@ -9,7 +9,7 @@ int main ()
     
     do 
     {
-        std::cout << "\n -!== BANK MANAGER v1.0 ==!-" << std::endl;
+        std::cout << "\n\n -!== BANK MANAGER v1.0 ==!-" << std::endl;
         std::cout << "\n - - All Actions - -" << std::endl;
         std::cout << "[1] Add client\n";
         std::cout << "[2] Open account\n";
@@ -63,7 +63,7 @@ int main ()
                 std::cout << "\n+ Enter a type your card -> "; // Credit or Debit
                 std::cin >> type;
 
-                if (type == "Credit") 
+                if (type == "Credit" || type == "credit") 
                 {
                     std::cout << "\nEnter your card's credit limit -> ";
                     std::cin >> creditlimit;
