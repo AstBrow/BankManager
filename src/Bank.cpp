@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <fstream>
 #include <assert.h>
@@ -321,7 +322,7 @@ void Bank::saveAccounts ()
         }
         else 
         {
-            CreditAccount* credit = dynamic_cast<CreditAccount*>(Accounts[i]);
+            CreditAccount* credit = dynamic_cast <CreditAccount*> (Accounts[i].get());
 
             file << credit->getBalance() << " " << credit->getOwnerID() 
               << " " << credit->getTypeAcc() << " " << credit->getCreditLimit() 
@@ -357,14 +358,12 @@ void Bank::loadAccounts ()
         if (temp_type == "Credit") 
         {
             file >> temp_creditLimit >> temp_accountNumber;
-            CreditAccount* openCredAcc = new CreditAccount(temp_balance, temp_clientId, temp_creditLimit, temp_accountNumber);
-            Accounts.push_back(openCredAcc);
+            Accounts.push_back(std::make_unique<CreditAccount>(temp_balance, temp_clientId, temp_creditLimit, temp_accountNumber));
         }
         else 
         {
             file >> temp_accountNumber;
-            DebitAccount* openCredAcc = new DebitAccount(temp_balance, temp_clientId, temp_accountNumber);
-            Accounts.push_back(openCredAcc);
+            Accounts.push_back(std::make_unique<DebitAccount>(temp_balance, temp_clientId, temp_accountNumber));
         }
     }
 
@@ -433,7 +432,6 @@ void Bank::loadAll ()
         nextClientID = 1;
         nextAccountNumber = 1000;
         Clients.clear();
-        for (int i = 0; i < Accounts.size(); i++) delete Accounts[i];
         Accounts.clear();
     }
 }
@@ -463,11 +461,6 @@ Bank::Bank ()
 Bank::~Bank () 
 {
     saveAll();
-
-    for (int i = 0; i < Accounts.size(); i++) 
-    {
-        delete Accounts[i];
-    }
 }
 
 void Bank::addClient (std::string name, std::string passport, int age) 
@@ -495,7 +488,7 @@ void Bank::openAccount (double balance, int clientID, std::string type, double c
         throw std::runtime_error("Erorr: Client with this ID not found");
     }
 
-    if (type == "Credit") 
+    if (type == "Credit" || type == "credit") 
     {
         if (Clients[clientID].getAge() < 18) 
         {
@@ -510,11 +503,10 @@ void Bank::openAccount (double balance, int clientID, std::string type, double c
         int accountNumber = nextAccountNumber;
         nextAccountNumber++;
 
-        CreditAccount* openCredAcc = new CreditAccount(balance, clientID, creditLimit, accountNumber);
         std::cout << "Account opened successfully." << std::endl;
-        Accounts.push_back(openCredAcc);
+        Accounts.push_back(std::make_unique<CreditAccount>(balance, clientID, creditLimit, accountNumber));
     }
-    else 
+    else if (type == "Debit" || type == "debit")
     {
         if (!uniquenessCheckAccNum(nextAccountNumber)) 
         {
@@ -523,9 +515,12 @@ void Bank::openAccount (double balance, int clientID, std::string type, double c
         int accountNumber = nextAccountNumber;
         nextAccountNumber++;
 
-        DebitAccount* openDebAcc = new DebitAccount(balance, clientID, accountNumber);
         std::cout << "Account opened successfully." << std::endl;
-        Accounts.push_back(openDebAcc);
+        Accounts.push_back(std::make_unique<DebitAccount>(balance, clientID, accountNumber));
+    }
+    else 
+    {
+        throw std::runtime_error("Error: Incorrect account type.");
     }
 }
 
@@ -536,7 +531,6 @@ void Bank::closeAccount (int accountNumber)
     {
         throw std::runtime_error("Error: An account with this number does not exist.");
     }
-    delete Accounts[i];
     Accounts.erase(Accounts.begin() + i);
     std::cout << "Account successfully closed" << std::endl;
 }
@@ -559,7 +553,11 @@ void Bank::withdraw (int accountNumber, double amount)
     {
         throw std::runtime_error("Error: An account with this number does not exist.");
     }
-    Accounts[i]->withdraw(amount);
+
+    if (!Accounts[i]->withdraw(amount)) 
+    {
+        throw std::runtime_error("Error: There are insufficient funds in the account.");
+    }
     std::cout << "Withdrawal of "<< amount << " was successful." << std::endl;
 }
 
@@ -577,7 +575,10 @@ void Bank::transfer (int fromAccNum, int toAccnum, double amount)
         throw std::runtime_error("Error: An account with this number does not exist.");
     }
 
-    Accounts[itFrom]->withdraw(amount);
+    if (!Accounts[itFrom]->withdraw(amount)) 
+    {
+        throw std::runtime_error("Error: There are insufficient funds in the account.");
+    }
     std::cout << "From the account " << fromAccNum << " withdrawn " << amount << std::endl;
 
     Accounts[itTo]->deposit(amount);

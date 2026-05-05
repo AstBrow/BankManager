@@ -16,7 +16,7 @@ Account::Account (double balance, int ownerID, std::string typeAcc, int accountN
 
     this->ownerID = ownerID;
 
-    if (typeAcc != "Debit" && typeAcc != "Credit") 
+    if (typeAcc != "Debit" && typeAcc != "Credit")
     {
         throw std::invalid_argument("Error: Invalid account type");
     }

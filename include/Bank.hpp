@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 #include "Account.h"
@@ -7,12 +8,10 @@
 #include "CreditAccount.h"
 #include "Client.h"
 
-
-
 class Bank 
 {
  private:
-    std::vector <Account*> Accounts;
+    std::vector <std::unique_ptr<Account>> Accounts;
     std::vector <Client> Clients;
     int nextClientID = 0;
     int nextAccountNumber = 0;
