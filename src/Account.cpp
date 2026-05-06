@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include "Account.h"
+#include "CreditAccount.h"
 
 Account::Account (double balance, int ownerID, std::string typeAcc, int accountNumber) 
 {
@@ -79,5 +80,9 @@ void Account::showInfo ()
     std::cout << "\n[- Balance: " << getBalance() << std::endl;
     std::cout << "\n[- Owner ID: " << getOwnerID()  << std::endl;
     std::cout << "\n[- Type account: " << getTypeAcc() << std::endl;
+    if (const CreditAccount* credit = dynamic_cast<const CreditAccount*>(this)) 
+    {
+        std::cout << "\n[- Credit Limit: " << credit->getCreditLimit() << std::endl;
+    }
     std::cout << "\n- - - - - - - - - - - - - - " << std::endl;
 }
