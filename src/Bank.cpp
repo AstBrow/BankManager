@@ -35,6 +35,16 @@ bool Bank::showAccountByNumber (int accountNumber)
     return false;
 }
 
+int Bank::findClientIndex(int clientID) 
+{
+    for (size_t i = 0; i < Clients.size(); ++i) 
+    {
+        if (Clients[i].getID() == clientID) return i;
+    }
+    return -1;
+}
+
+
 int Bank::findIterByAccountNumber (int accountNumber) 
 {
     for (int i = 0; i < Accounts.size(); i++) 
@@ -488,9 +498,11 @@ void Bank::openAccount (double balance, int clientID, std::string type, double c
         throw std::runtime_error("Erorr: Client with this ID not found");
     }
 
+    int i = findClientIndex(clientID);
+
     if (type == "Credit" || type == "credit") 
     {
-        if (Clients[clientID].getAge() < 18) 
+        if (Clients[i].getAge() < 18) 
         {
             throw std::runtime_error("Error: You cannot open a credit account until you are 18 years old.");
         }
@@ -601,28 +613,19 @@ void Bank::showAllClients ()
 
 void Bank::showClientAccounts (int clientID) 
 {
-    int itId = -1;
+    int itId = findClientIndex(clientID);
     std::cout << "\n= = = INFORMATION FOR CLIENT'S ACCOUNTS = = =" << std::endl;
 
-    for (int i = 0; i < Clients.size(); i++) 
+    if (itId == -1) 
     {
-        if (Clients[i].getID() == clientID) 
+        throw std::runtime_error("Error: Client with this ID not found.");
+    }
+
+    for (int j = 0; j < Accounts.size(); j++) 
+    {
+        if (Accounts[j]->getOwnerID() == Clients[itId].getID()) 
         {
-            itId = i;
-
-            if (itId == -1) 
-            {
-                throw std::runtime_error("Error: An account with this number does not exist.");
-            }
-
-            for (int j = 0; j < Accounts.size(); j++) 
-            {
-                if (Accounts[j]->getOwnerID() == Clients[itId].getID()) 
-                {
-                    Accounts[j]->showInfo();
-                }
-            }
-            break;
+            Accounts[j]->showInfo();
         }
     }
 }

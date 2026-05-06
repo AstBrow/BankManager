@@ -13,4 +13,5 @@ class CreditAccount : public Account
     bool withdraw (double amount);
 
     double getCreditLimit () const;
+
 };

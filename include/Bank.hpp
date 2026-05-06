@@ -16,6 +16,7 @@ class Bank
     int nextClientID = 0;
     int nextAccountNumber = 0;
 
+    int findClientIndex(int clientID);
     int findIterByAccountNumber (int accountNumber);
 
     bool uniquenessCheckID (int id);
