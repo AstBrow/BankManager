@@ -109,7 +109,8 @@ All Actions - -
 [7] Show client accounts                
 [8] Show account info                
 [9] Show client info                   
-[10] Close account                  
+[10] Close account 
+[11] Delete client
 [0] Exit                           
 Select an action: _                 
 ---
