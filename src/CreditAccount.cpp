@@ -12,6 +12,9 @@ CreditAccount::CreditAccount(double balance, int ownerID, double creditLimit, in
     this->creditLimit = creditLimit;
 }
 
+CreditAccount::CreditAccount (double balance, int ownerID, double creditLimit, int accountNUmber, bool isLoad) 
+     : Account(balance, ownerID, "Credit", accountNUmber, isLoad) {}
+
 bool CreditAccount::withdraw (double amount) 
 {
     if (amount > 0) 

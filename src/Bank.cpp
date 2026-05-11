@@ -362,13 +362,16 @@ void Bank::loadAccounts ()
     double temp_balance, temp_creditLimit;
     int temp_clientId, temp_accountNumber;
     std::string temp_type;
+    bool isAccountLoad = false;
 
     while (file >> temp_balance >> temp_clientId >> temp_type) 
     {
         if (temp_type == "Credit") 
         {
+            isAccountLoad = true;
             file >> temp_creditLimit >> temp_accountNumber;
-            Accounts.push_back(std::make_unique<CreditAccount>(temp_balance, temp_clientId, temp_creditLimit, temp_accountNumber));
+            Accounts.push_back(std::make_unique<CreditAccount>(temp_balance, temp_clientId, temp_creditLimit, temp_accountNumber, isAccountLoad));
+            isAccountLoad = false;
         }
         else 
         {
@@ -490,6 +493,28 @@ void Bank::addClient (std::string name, std::string passport, int age)
     std::cout << "Сlient added successfully." << std::endl;
     Clients.push_back(clientAdd);
 }
+
+void Bank::removeClient (int clientID) 
+{
+    int idx = findClientIndex(clientID);
+
+    if (idx == -1) 
+    {
+        throw std::runtime_error("Error: Client with this ID not found");
+    }
+
+    for (int i = 0; i < Accounts.size(); i++) 
+    {
+        if (Accounts[i]->getOwnerID() == clientID) 
+        {
+            throw std::runtime_error("Error: Cannot delete client with open accounts. Close all accounts first.");
+        }
+    }
+
+    Clients.erase(Clients.begin() + idx);
+    std::cout << "\nClient ID " << clientID << " removed successfully." << std::endl;
+}
+
 
 void Bank::openAccount (double balance, int clientID, std::string type, double creditLimit) 
 {

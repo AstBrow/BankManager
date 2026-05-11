@@ -21,6 +21,7 @@ int main ()
         std::cout << "[8] Show account info\n";
         std::cout << "[9] Show client info\n";
         std::cout << "[10] Close account\n";
+        std::cout << "[11] Remove client\n";
         std::cout << "[0] Exit\n"; 
         std::cout << "Select an action: ";
 
@@ -172,6 +173,27 @@ int main ()
                 std::cin >> accountNumber;
 
                 bank.closeAccount(accountNumber);
+            }
+            else if (choise == 11) 
+            {
+                int clientID;
+                std::string agree;
+
+                std::cout << "\n| Remove Client |" << std::endl;
+
+                std::cout << "Enter client's ID -> ";
+                std::cin >> clientID;
+
+                std::cout << "Do you really want to delete the client? " << std::endl;
+                std::cout << "[Y/N]: ";
+                std::cin >> agree;
+
+                if (agree == "Y" || agree == "y") 
+                {
+                    bank.removeClient(clientID);
+                }
+                else;
+
             }
             else if (choise == 0) // exit
             {

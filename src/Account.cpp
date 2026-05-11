@@ -24,6 +24,25 @@ Account::Account (double balance, int ownerID, std::string typeAcc, int accountN
     this->typeAcc = typeAcc;
 }
 
+Account::Account (double balance, int ownerID, std::string typeAcc, int accountNumber, bool isLoad) 
+{
+    this->accountNumber = accountNumber;
+
+    if ((!isLoad || typeAcc != "Credit") && balance < 0) 
+    {
+        throw std::invalid_argument("Error: The balance cannot be negative.");
+    }
+    this->balance = balance;
+
+    this->ownerID = ownerID;
+
+    if (typeAcc != "Debit" && typeAcc != "Credit")
+    {
+        throw std::invalid_argument("Error: Invalid account type");
+    }
+    this->typeAcc = typeAcc;
+}
+
 int Account::getAccountNumber () const 
 {
     return accountNumber;

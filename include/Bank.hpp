@@ -45,6 +45,8 @@ class Bank
 
     void addClient (std::string name, std::string passport, int age);
 
+    void removeClient (int clientID);
+
     void openAccount (double balance, int clientID, std::string type, double creditLimit);
 
     void closeAccount (int accountNumber);
