@@ -6,27 +6,26 @@ class Account
 {
  private:
 
-    int accountNumber = 0;
-    double balance = 0;
-    int ownerID = 0;
-    std::string typeAcc = "unknown";
+   int accountNumber = 0;
+   double balance = 0;
+   int ownerID = 0;
+   std::string typeAcc = "unknown";
 
  protected:
-
-    void setBalance(double newBalance);
+   void setBalance(double newBalance);
 
  public:
-    Account ();
-    Account (double balance, int ownerID, std::string typeAcc, int accountNumber);
+   Account (double balance, int ownerID, std::string typeAcc, int accountNumber, bool isLoad);
+   Account (double balance, int ownerID, std::string typeAcc, int accountNumber);
 
-    int getAccountNumber () const;
-    double getBalance () const;
-    int getOwnerID () const;
-    std::string getTypeAcc () const;
+   int getAccountNumber () const;
+   double getBalance () const;
+   int getOwnerID () const;
+   std::string getTypeAcc () const;
 
-    void deposit (double amount);
+   void deposit (double amount);
 
-    virtual bool withdraw (double amount);
+   virtual bool withdraw (double amount);
 
-    virtual void showInfo ();
+   virtual void showInfo ();
 };

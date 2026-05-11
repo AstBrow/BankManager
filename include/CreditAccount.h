@@ -9,6 +9,8 @@ class CreditAccount : public Account
 
  public:
     CreditAccount (double balance, int ownerID, double creditLimit, int accountNUmber);
+    CreditAccount (double balance, int ownerID, double creditLimit, int accountNUmber, bool isLoad);
+
 
     bool withdraw (double amount);
 
