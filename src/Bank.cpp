@@ -24,11 +24,11 @@ bool Bank::showClientByID (int id)
 
 bool Bank::showAccountByNumber (int accountNumber) 
 {
-    for (int i = 0; i < Accounts.size(); i++) 
+    for (const auto& account : Accounts) 
     {
-        if (Accounts[i]->getAccountNumber() == accountNumber) 
+        if (account->getAccountNumber() == accountNumber) 
         {
-            Accounts[i]->showInfo();
+            account->showInfo();
             return true;
         }
     }
@@ -59,27 +59,27 @@ int Bank::findIterByAccountNumber (int accountNumber)
 
 bool Bank::uniquenessCheckID (int id) 
 {
-    for (int i = 0; i < Clients.size(); i++) 
+    for (const auto& client : Clients) 
     {
-        if (Clients[i].getID() == id) return false;
+        if (client.getID() == id) return false;
     }
     return true;
 }
 
 bool Bank::uniquenessCheckPassport (std::string passport) 
 {
-    for (int i = 0; i < Clients.size(); i++) 
+    for (const auto& client : Clients) 
     {
-        if (Clients[i].getPassport() == passport) return false;
+        if (client.getPassport() == passport) return false;
     }
     return true;
 }
 
 bool Bank::uniquenessCheckAccNum (int accountNum) 
 {
-    for (int i = 0; i < Accounts.size(); i++) 
+    for (const auto& account : Accounts) 
     {
-        if (Accounts[i]->getAccountNumber() == accountNum) return false;
+        if (account->getAccountNumber() == accountNum) return false;
     }
     return true;
 }
@@ -277,10 +277,10 @@ void Bank::saveClients ()
         throw std::runtime_error("Error: failed to open file.");
     }
 
-    for (int i = 0; i < Clients.size(); i++) 
+    for (const auto& client : Clients) 
     {
-        file << Clients[i].getName() << " " << Clients[i].getPassport() 
-          << " " << Clients[i].getAge() << " " << Clients[i].getID() << "\n";
+        file << client.getName() << " " << client.getPassport() 
+          << " " << client.getAge() << " " << client.getID() << "\n";
     }
 
     file.close();
@@ -323,20 +323,20 @@ void Bank::saveAccounts ()
         throw std::runtime_error("Error: failed to open file");
     }
 
-    for (int i = 0; i < Accounts.size(); i++) 
+    for (const auto& account : Accounts) 
     {
-        if (Accounts[i]->getTypeAcc() == "Debit") 
+        if (account->getTypeAcc() == "Debit") 
         {
-            file << Accounts[i]->getBalance() << " " << Accounts[i]->getOwnerID() 
-              << " " << Accounts[i]->getTypeAcc() << " " << Accounts[i]->getAccountNumber() << "\n";
+            file << account->getBalance() << " " << account->getOwnerID() 
+              << " " << account->getTypeAcc() << " " << account->getAccountNumber() << "\n";
         }
         else 
         {
-            CreditAccount* credit = dynamic_cast <CreditAccount*> (Accounts[i].get());
+            CreditAccount* credit = dynamic_cast <CreditAccount*> (account.get());
 
             file << credit->getBalance() << " " << credit->getOwnerID() 
               << " " << credit->getTypeAcc() << " " << credit->getCreditLimit() 
-              << " " << Accounts[i]->getAccountNumber() << "\n";
+              << " " << account->getAccountNumber() << "\n";
         }
     }
 
@@ -503,9 +503,9 @@ void Bank::removeClient (int clientID)
         throw std::runtime_error("Error: Client with this ID not found");
     }
 
-    for (int i = 0; i < Accounts.size(); i++) 
+    for (const auto& account : Accounts) 
     {
-        if (Accounts[i]->getOwnerID() == clientID) 
+        if (account->getOwnerID() == clientID) 
         {
             throw std::runtime_error("Error: Cannot delete client with open accounts. Close all accounts first.");
         }
@@ -626,12 +626,13 @@ void Bank::showAllClients ()
 {
     std::cout << "\n = = = ALL CLIENTS = = =" << std::endl;
 
-    for (int i = 0; i < Clients.size(); i++) 
+    int i = 1;
+    for (const auto& client : Clients) 
     {
-        std::cout << "-- Client #" << i + 1 << std::endl;
-        std::cout << "Name: " << Clients[i].getName() << std::endl;
-        std::cout << "ID: " << Clients[i].getID() << std::endl;
-        std::cout << "Age: " << Clients[i].getAge() << std::endl;
+        std::cout << "-- Client #" << i++ << std::endl;
+        std::cout << "Name: " << client.getName() << std::endl;
+        std::cout << "ID: " << client.getID() << std::endl;
+        std::cout << "Age: " << client.getAge() << std::endl;
         std::cout << "- - - - - - - - " << std::endl;
     }
 }
@@ -646,11 +647,11 @@ void Bank::showClientAccounts (int clientID)
         throw std::runtime_error("Error: Client with this ID not found.");
     }
 
-    for (int j = 0; j < Accounts.size(); j++) 
+    for (const auto& account : Accounts) 
     {
-        if (Accounts[j]->getOwnerID() == Clients[itId].getID()) 
+        if (account->getOwnerID() == Clients[itId].getID()) 
         {
-            Accounts[j]->showInfo();
+            account->showInfo();
         }
     }
 }
